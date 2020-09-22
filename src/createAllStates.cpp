@@ -22,7 +22,7 @@ int main()
     
     coefficientskMomentum(coeffs);
     cout << "coeffs : " << coeffs[5][6] << endl;
-    num = outputmStates(L, 0);
+//    num = outputmStates(L, 0);
 //   num = bitToNum("0022");
     cout << " num of states: "<< num << endl;
     return 0;
