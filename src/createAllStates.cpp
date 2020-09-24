@@ -6,9 +6,6 @@
 #include <fstream>
 
 
-
-
-
 using namespace std;
 
 void outputAllStates(int L);
@@ -31,7 +28,7 @@ int main()
     
     vector<double> groundState;
 
-    ifstream myFile{"site6_m0_open.txt"};
+    ifstream myFile{"site10.txt"};
     int totalStates = 0;
 
     if (!myFile.is_open()) return -1;
@@ -61,7 +58,7 @@ int main()
     numStates_m = outputmStates(L, 0, states);
 //    for (int i = 0; i < numStates_m; i++)
 //    {    cout << groundState[i] << endl;}
-    kindex = coefficientskMomentum(A, numStates_m, numStates_m, L, 5, states);
+    kindex = coefficientskMomentum(A, numStates_m, numStates_m, L, 1, states);
     cout << "kinde: " << kindex << endl;
     for (int i = 0; i < kindex; i++)
     {
