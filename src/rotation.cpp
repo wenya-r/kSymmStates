@@ -14,14 +14,19 @@ int bitToNum(string bit);
 string translation(string bit);
 
 int coefficientskMomentum(complex<double> **arr, int row, int col, int L, int k, vector<string> &vect);
+void projection(complex<double> *arr, vector<double> groundstate , vector<string> &states, int k);
+int bitToIndex(string bit, vector<string> &vect);
+double normalize(complex<double> * vec, int col);
+
 
 
 int main()
 {
-    int L=4, kindex;
+    int L=4, kindex, k = 0;
     int num, numStates_m; 
-    double overlap = 0, dot = 0, item;
+    double overlap = 0, dot = 0, item, projSize;
     vector<string> states;
+    complex<double> * A;
     cout.precision(17);  
     
     vector<double> groundState;
@@ -39,9 +44,9 @@ int main()
 //        1/sqrt(3.), 0,  1/sqrt(6.), 0};
 
 
+    
 
-
-    ifstream myFile{"site12.txt"};
+    ifstream myFile{"site10.txt"};
     int totalStates = 0;
     numStates_m = 19;
 
@@ -58,35 +63,71 @@ int main()
     }
     cout << "finish reading file " << endl;   
     myFile.close();
-
-    complex<double> **A = new complex<double>*[numStates_m];
-    for(int i = 0; i < numStates_m; i++)
-    {
-        A[i] = new complex<double>[numStates_m];
-    }
+    
+    A = new complex<double>[numStates_m]; // A is the vector for projection
     for (int i = 0; i < numStates_m; i++)
-    {
-        for (int j = 0; j < numStates_m; j++) {A[i][j] = 0;}
-    }
-    cout << "This is OK!" << endl;
-    numStates_m = outputmStates(L, 0, states);
-//    for (int i = 0; i < numStates_m; i++)
-//    {    cout << groundState[i] << endl;}
-    kindex = coefficientskMomentum(A, numStates_m, numStates_m, L, 4, states);
-    cout << "kinde: " << kindex << endl;
-    for (int i = 0; i < kindex; i++)
-    {
-        dot = dotProduct(A[i], groundState, numStates_m);
+    {  A[i] = 0;}
 
-        cout<< "output each overlap:" << dot << endl;
-        overlap = overlap + dot;
-    }
+    
+//    {
+//    complex<double> **A = new complex<double>*[numStates_m];
+//    for(int i = 0; i < numStates_m; i++)
+//    {
+//        A[i] = new complex<double>[numStates_m];
+//    }
+//    for (int i = 0; i < numStates_m; i++)
+//    {
+//        for (int j = 0; j < numStates_m; j++) {A[i][j] = 0;}
+//    }
+//    cout << "This is OK!" << endl;
+    numStates_m = outputmStates(L, 0, states);
+//    kindex = coefficientskMomentum(A, numStates_m, numStates_m, L, 2, states);
+
+    projection(A, groundState, states, k);
+    cout << "kinde: " << kindex << endl;
+//    for (int i = 0; i < kindex; i++)
+//    {
+//        dot = dotProduct(A, groundState, numStates_m);
+//
+//        cout<< "output each overlap:" << dot << endl;
+//        overlap = overlap + dot;
+//    }
+    projSize = normalize(A, numStates_m);
+    overlap = dotProduct(A, groundState, numStates_m)/projSize/projSize;
     cout << "overlap : " << overlap << endl;
 //    cout << "overlap sqrt: " << sqrt(overlap) << endl;
 
     return 0;
 } //  end Main
 
+
+
+void projection(complex<double> *arr, vector<double> groundstate , vector<string> &states, int k)
+{
+    int L, size = states.size();
+    string state;
+    const double pi = acos(-1);
+    double  km;
+    complex<double> phase, phaser;
+    L = states[0].length() ; 
+    km = k*2*pi/L;
+    phase = complex<double>(0, km);
+    for (int i = 0; i< size; i++)
+    {
+        arr[i] = groundstate[i];
+        state = states[i];
+        phaser= phase;
+        for (int j = 1; j < L ; j++)
+        { 
+            state = translation(state);            
+            arr[i] = arr[i] + exp(phaser) * groundstate[bitToIndex(state,states)] ;
+            phaser = phaser + phase;
+        }
+    }    
+
+
+
+}
 
 
 
