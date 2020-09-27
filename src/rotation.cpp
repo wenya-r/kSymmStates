@@ -16,7 +16,6 @@ string translation(string bit);
 int coefficientskMomentum(complex<double> **arr, int row, int col, int L, int k, vector<string> &vect);
 void projection(complex<double> *arr, vector<double> groundstate , vector<string> &states, int k);
 int bitToIndex(string bit, vector<string> &vect);
-double normalize(complex<double> * vec, int col);
 
 
 
@@ -223,22 +222,6 @@ int bitToIndex(string bit, vector<string> &vect)
 
     return index;
 }
-
-
-
-double normalize(complex<double> * vec, int col)
-{
-    double norm = 0;
-    for (int i = 0; i < col; i++)
-    {
-        norm = norm + vec[i].real() * vec[i].real() + vec[i].imag() * vec[i].imag(); 
-    }
-
-    return sqrt(norm);
-
-}
-
-
 
 
 
