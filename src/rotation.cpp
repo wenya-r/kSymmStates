@@ -23,7 +23,7 @@ int main()
 {
     int L=4, kindex, k = 0;
     int num, numStates_m; 
-    double overlap = 0, dot = 0, item, projSize;
+    double overlap = 0, dot = 0, item, projSize, groundNorm;
     vector<string> states;
     complex<double> * A;
     cout.precision(17);  
@@ -45,10 +45,9 @@ int main()
 
     
 
-    ifstream myFile{"site10.txt"};
+    ifstream myFile{"site12.txt"};
     int totalStates = 0;
     numStates_m = 19;
-
     if (!myFile.is_open()) return -1;
     myFile >> L ;
     cout << "L is : " << L << endl;
@@ -63,6 +62,12 @@ int main()
     cout << "finish reading file " << endl;   
     myFile.close();
     
+//    }
+    groundNorm =   normalize(groundState, numStates_m) ;
+    for (int i =0; i < numStates_m; i++) {groundState[i] = groundState[i]/groundNorm;}
+
+
+
     A = new complex<double>[numStates_m]; // A is the vector for projection
     for (int i = 0; i < numStates_m; i++)
     {  A[i] = 0;}
@@ -80,22 +85,15 @@ int main()
 //    }
 //    cout << "This is OK!" << endl;
     numStates_m = outputmStates(L, 0, states);
-//    kindex = coefficientskMomentum(A, numStates_m, numStates_m, L, 2, states);
-
-    projection(A, groundState, states, k);
-    cout << "kinde: " << kindex << endl;
-//    for (int i = 0; i < kindex; i++)
-//    {
-//        dot = dotProduct(A, groundState, numStates_m);
-//
-//        cout<< "output each overlap:" << dot << endl;
-//        overlap = overlap + dot;
-//    }
-    projSize = normalize(A, numStates_m);
-    overlap = dotProduct(A, groundState, numStates_m)/projSize/projSize;
-    cout << "overlap : " << overlap << endl;
-//    cout << "overlap sqrt: " << sqrt(overlap) << endl;
-
+    cout << " numStates_m = " << numStates_m << endl;
+    k = 0;
+    for (k = 1 ; k < L; k++)
+    {
+        projection(A, groundState, states, k);
+        projSize = normalize(A, numStates_m);
+        overlap = dotProduct(A, groundState, numStates_m)/projSize/projSize;
+        cout << "overlap ^2: " << overlap << endl;
+    }
     return 0;
 } //  end Main
 

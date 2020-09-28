@@ -1,5 +1,16 @@
 #include "rotation.hpp"
+#include "basicAlg.hpp"
 
+
+#include <iostream>
+#include <cmath>
+#include <string>
+#include <bits/stdc++.h>
+#include <complex>
+#include <fstream>
+#include "basicAlg.hpp"
+
+using namespace std;
 
 int main()
 {
@@ -51,6 +62,17 @@ int main()
 
     
     numStates_m = outputmStates(L, 0, states);
+
+    for (k = 0; k < L; k++)
+    {
+        projection(A, groundState, states, k);
+        projSize = normalize(A, numStates_m);
+        overlap = dotProduct(A, groundState, numStates_m)/projSize/projSize;
+        cout << "k = "<< k << " overlap : " << overlap << endl;
+    }
+    return 0;
+} //  end Main
+
 
 
 

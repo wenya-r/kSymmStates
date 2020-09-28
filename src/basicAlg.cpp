@@ -17,10 +17,26 @@ double normalize(complex<double> * vec, int col)
     {
         norm = norm + vec[i].real() * vec[i].real() + vec[i].imag() * vec[i].imag(); 
     }
-
     return sqrt(norm);
-
 }
+
+
+double normalize(vector<double>  vec, int col)
+{
+    double norm = 0;
+    for (int i = 0; i < col; i++)
+    {
+        norm = norm + vec[i] * vec[i]; 
+    }
+    return sqrt(norm);
+}
+
+
+
+
+
+
+
 
 
 double dotProduct(complex<double> * vec1, complex<double> * vec2, int col)
