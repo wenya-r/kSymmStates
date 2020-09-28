@@ -45,7 +45,7 @@ int main()
 
     
 
-    ifstream myFile{"site12.txt"};
+    ifstream myFile{"site14.txt"};
     int totalStates = 0;
     numStates_m = 19;
     if (!myFile.is_open()) return -1;
@@ -64,6 +64,7 @@ int main()
     
 //    }
     groundNorm =   normalize(groundState, numStates_m) ;
+    cout << "groundNorm = " << groundNorm << endl;
     for (int i =0; i < numStates_m; i++) {groundState[i] = groundState[i]/groundNorm;}
 
 
@@ -87,12 +88,15 @@ int main()
     numStates_m = outputmStates(L, 0, states);
     cout << " numStates_m = " << numStates_m << endl;
     k = 0;
-    for (k = 1 ; k < L; k++)
+    for (k = 0 ; k < L; k++)
     {
         projection(A, groundState, states, k);
+        for (int i = 1; i < numStates_m; i++)
+//        { cout << sqrt(norm(A[i])) << endl;}
         projSize = normalize(A, numStates_m);
+//        cout << "project Size: " << projSize << endl;
         overlap = dotProduct(A, groundState, numStates_m)/projSize/projSize;
-        cout << "overlap ^2: " << overlap << endl;
+        cout << "k = " << k <<  " :overlap ^2: " << overlap << endl;
     }
     return 0;
 } //  end Main
@@ -120,6 +124,7 @@ void projection(complex<double> *arr, vector<double> groundstate , vector<string
             arr[i] = arr[i] + exp(phaser) * groundstate[bitToIndex(state,states)] ;
             phaser = phaser + phase;
         }
+        
     }    
 
 
