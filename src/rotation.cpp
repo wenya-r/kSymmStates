@@ -17,35 +17,20 @@ int coefficientskMomentum(complex<double> **arr, int row, int col, int L, int k,
 void projection(complex<double> *arr, vector<double> groundstate , vector<string> &states, int k);
 int bitToIndex(string bit, vector<string> &vect);
 
+double overlapKmode(vector<double> groundState, int k, int numStates_m, vector<string> states) ;
 
-
+/*
 int main()
 {
     int L=4, kindex, k = 0;
     int num, numStates_m; 
     double overlap = 0, dot = 0, item, projSize, groundNorm;
     vector<string> states;
-    complex<double> * A;
     cout.precision(17);  
     
     vector<double> groundState;
-//    vector<double> groundState{
-//        0,0,0,1/sqrt(6.),0,
-//        0,0,1/sqrt(12.),0,1/sqrt(3.0),
-//        0,0,0,0,0,
-//        1/sqrt(6.), 0,  1/sqrt(12.), 0};
 
-
-//    vector<double> groundState{
-//        0,0,0,0,0,
-//        0,0,1/sqrt(6.),0,1/sqrt(3.0),
-//        0,0,0,0,0,
-//        1/sqrt(3.), 0,  1/sqrt(6.), 0};
-
-
-    
-
-    ifstream myFile{"site14.txt"};
+    ifstream myFile{"site6_m0_open.txt"};
     int totalStates = 0;
     numStates_m = 19;
     if (!myFile.is_open()) return -1;
@@ -69,10 +54,6 @@ int main()
 
 
 
-    A = new complex<double>[numStates_m]; // A is the vector for projection
-    for (int i = 0; i < numStates_m; i++)
-    {  A[i] = 0;}
-
     
 //    {
 //    complex<double> **A = new complex<double>*[numStates_m];
@@ -90,18 +71,35 @@ int main()
     k = 0;
     for (k = 0 ; k < L; k++)
     {
-        projection(A, groundState, states, k);
-        for (int i = 1; i < numStates_m; i++)
-//        { cout << sqrt(norm(A[i])) << endl;}
-        projSize = normalize(A, numStates_m);
-//        cout << "project Size: " << projSize << endl;
-        overlap = dotProduct(A, groundState, numStates_m)/projSize/projSize;
+        overlap = overlapKmode(groundState, k, numStates_m, states);
         cout << "k = " << k <<  " :overlap ^2: " << overlap << endl;
     }
     return 0;
 } //  end Main
 
+*/
 
+
+double overlapKmode(vector<double> groundState, int k, int numStates_m, vector<string> states) 
+{
+    double result, projSize;        
+
+    complex<double> * A;
+
+
+    A = new complex<double>[numStates_m]; // A is the vector for projection
+    for (int i = 0; i < numStates_m; i++)
+    {  A[i] = 0;}
+
+
+    projection(A, groundState, states, k);
+
+
+    projSize = normalize(A, numStates_m);
+    result = dotProduct(A, groundState, numStates_m)/projSize/projSize;
+
+    return result;
+}
 
 void projection(complex<double> *arr, vector<double> groundstate , vector<string> &states, int k)
 {

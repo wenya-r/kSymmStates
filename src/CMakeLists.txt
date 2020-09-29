@@ -5,15 +5,20 @@ set(CMAKE_CXX_STANDARD 11)
 #set(CMAKE_CXX_EXTENSIONS OFF)
 #set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_library(basic 
+add_library(basic
     STATIC
         basicAlg.hpp
         basicAlg.cpp
 )
 
+add_library(rotation
+    STATIC
+        rotation.hpp
+        rotation.cpp
+)
 add_library(basicAlg basicAlg.cpp)
 #add_executable(overlap_r createAllStates.cpp)
-add_executable(overlap_r rotation.cpp)
+add_executable(overlap_r main_run.cpp rotation.cpp)
 target_link_libraries(overlap_r basic)
 
 
@@ -71,6 +76,7 @@ target_sources(cpp_test
 target_link_libraries(cpp_test
   PRIVATE
     basic
+    rotation
     gtest_main
   )
 
