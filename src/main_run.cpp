@@ -21,6 +21,7 @@ int main()
     cout.precision(17);  
     
     vector<double> groundState;
+    vector<int> indexTable;
 
     ifstream myFile{"site6_m0_open.txt"};
     int totalStates = 0;
@@ -44,25 +45,12 @@ int main()
     for (int i =0; i < numStates_m; i++) {groundState[i] = groundState[i]/groundNorm;}
 
 
-
-    
-//    {
-//    complex<double> **A = new complex<double>*[numStates_m];
-//    for(int i = 0; i < numStates_m; i++)
-//    {
-//        A[i] = new complex<double>[numStates_m];
-//    }
-//    for (int i = 0; i < numStates_m; i++)
-//    {
-//        for (int j = 0; j < numStates_m; j++) {A[i][j] = 0;}
-//    }
-//    cout << "This is OK!" << endl;
-    numStates_m = outputmStates(L, 0, states);
+    numStates_m = outputmStates(L, 0, states, indexTable);
     cout << " numStates_m = " << numStates_m << endl;
     k = 0;
     for (k = 0 ; k < L; k++)
     {
-        overlap = overlapKmode(groundState, k, numStates_m, states);
+        overlap = overlapKmode(groundState, k, numStates_m, states, indexTable);
         cout << "k = " << k <<  " :overlap ^2: " << overlap << endl;
     }
     return 0;

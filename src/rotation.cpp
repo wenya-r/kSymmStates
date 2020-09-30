@@ -9,15 +9,18 @@
 using namespace std;
 
 void outputAllStates(int L);
-int outputmStates(int L, int m, vector<string> &vect);
+int outputmStates(int L, int m, vector<string> &vect, vector<int> &indexTable);
 int bitToNum(string bit);
 string translation(string bit);
 
-int coefficientskMomentum(complex<double> **arr, int row, int col, int L, int k, vector<string> &vect);
-void projection(complex<double> *arr, vector<double> groundstate , vector<string> &states, int k);
-int bitToIndex(string bit, vector<string> &vect);
+int coefficientskMomentum(complex<double> **arr, int row, int col, int L, int k, vector<string> &vect, vector<int> &indexTable);
+void projection(complex<double> *arr, vector<double> groundstate , vector<string> &states, int k, vector<int> &indexTable);
+int bitToIndex(string bit, vector<string> &vect, vector<int> &indexTable);
 
-double overlapKmode(vector<double> groundState, int k, int numStates_m, vector<string> states) ;
+double overlapKmode(vector<double> groundState, int k, int numStates_m, vector<string> states, vector<int> &indexTable) ;
+
+
+
 
 /*
 int main()
@@ -80,7 +83,7 @@ int main()
 */
 
 
-double overlapKmode(vector<double> groundState, int k, int numStates_m, vector<string> states) 
+double overlapKmode(vector<double> groundState, int k, int numStates_m, vector<string> states, vector<int> &indexTable) 
 {
     double result, projSize;        
 
@@ -90,9 +93,9 @@ double overlapKmode(vector<double> groundState, int k, int numStates_m, vector<s
     A = new complex<double>[numStates_m]; // A is the vector for projection
     for (int i = 0; i < numStates_m; i++)
     {  A[i] = 0;}
+    cout << "beginning of overlpaLmode " << endl;
 
-
-    projection(A, groundState, states, k);
+    projection(A, groundState, states, k, indexTable);
 
 
     projSize = normalize(A, numStates_m);
@@ -101,7 +104,7 @@ double overlapKmode(vector<double> groundState, int k, int numStates_m, vector<s
     return result;
 }
 
-void projection(complex<double> *arr, vector<double> groundstate , vector<string> &states, int k)
+void projection(complex<double> *arr, vector<double> groundstate , vector<string> &states, int k, vector<int> &indexTable)
 {
     int L, size = states.size();
     string state;
@@ -111,6 +114,7 @@ void projection(complex<double> *arr, vector<double> groundstate , vector<string
     L = states[0].length() ; 
     km = k*2*pi/L;
     phase = complex<double>(0, km);
+    cout << "beginning of projection " << endl;
     for (int i = 0; i< size; i++)
     {
         arr[i] = groundstate[i];
@@ -119,7 +123,7 @@ void projection(complex<double> *arr, vector<double> groundstate , vector<string
         for (int j = 1; j < L ; j++)
         { 
             state = translation(state);            
-            arr[i] = arr[i] + exp(phaser) * groundstate[bitToIndex(state,states)] ;
+            arr[i] = arr[i] + exp(phaser) * groundstate[bitToIndex(state,states, indexTable)] ;
             phaser = phaser + phase;
         }
         
@@ -135,7 +139,7 @@ void outputAllStates(int L){
     int numOfStates = pow(3,L);
     int stateNum;
     string state;
-    cout << "num of states: " << numOfStates << endl;
+    cout << "num of Allstates: " << numOfStates << endl;
     for(int i = numOfStates-1;i>-1;i--)
     {   
 //        cout << i;
@@ -150,14 +154,14 @@ void outputAllStates(int L){
     }
 }
 
-int outputmStates(int L, int m, vector<string> &vect){
+int outputmStates(int L, int m, vector<string> &vect, vector<int> &indexTable){
 // m is Sz total. sum(string)= L+m 
 
     int numOfStates = pow(3,L);
     int stateNum, bit, sumBit;
     int total = 0;
     string state;
-    cout << "num of states: " << numOfStates << endl;
+    cout << "num of m states: " << numOfStates << endl;
     for(int i = numOfStates-1;i>-1;i--)
     {   
         stateNum = i;
@@ -176,6 +180,7 @@ int outputmStates(int L, int m, vector<string> &vect){
         {
             total++;
             vect.push_back(state);
+            indexTable.push_back(i);
 //            cout << state << endl;
         }
     }
@@ -208,26 +213,39 @@ string translation(string bit)
 
 }
 
-int bitToIndex(string bit, vector<string> &vect)
+int bitToIndex(string bit, vector<string> &vect, vector<int> &indexTable)
 {
-    int index= 0;
+    int numBit, index= 0, upper,lower, mid=0;
     bool done= false;
-    while(!done)
+    numBit = bitToNum(bit);
+//    cout << "numBit = " << numBit<< endl;
+//    while(!done)
+//    {
+//        if (vect[index] == bit)
+//        {
+//            done = true;
+//        }
+//        else{index++;}
+//    }
+    upper = 0; 
+    lower = vect.size()-1;
+//    cout << "inside bitToIndex " << endl;
+    while(lower > upper )
     {
-        if (vect[index] == bit)
-        {
-            done = true;
-        }
-        else{index++;}
-    }
 
-    return index;
+        mid = (upper + lower)/2;
+//        cout << "mid " << mid << endl;
+        if (indexTable[mid]> numBit){  upper = mid ; }
+        else if (indexTable[mid]< numBit) { lower = mid-1;}
+        else{return mid;}
+    }
+    return mid;
 }
 
 
 
 
-int coefficientskMomentum(complex<double> **arr, int row, int col, int L, int k, vector<string> &vect)
+int coefficientskMomentum(complex<double> **arr, int row, int col, int L, int k, vector<string> &vect, vector<int> &indexTable)
 {
     string bit;
     int i, r, kindex = 0;
@@ -248,12 +266,12 @@ int coefficientskMomentum(complex<double> **arr, int row, int col, int L, int k,
     {
         bit = vect[i];
         for (int i = 0; i < col; i++) {cofArr[i]=0;}
-        cofArr[bitToIndex(bit, vect)] = 1;        
+        cofArr[bitToIndex(bit, vect, indexTable)] = 1;        
         phaser = phase;
         for(r = 1; r < L; r++)
         {
             bit = translation(bit);
-            cofArr[bitToIndex(bit, vect)] =  cofArr[bitToIndex(bit, vect)]+exp(phaser);   
+            cofArr[bitToIndex(bit, vect, indexTable)] =  cofArr[bitToIndex(bit, vect, indexTable)]+exp(phaser);   
             phaser = phaser + phase;
         }
         norm =  normalize(cofArr, col) ;
@@ -281,26 +299,9 @@ int coefficientskMomentum(complex<double> **arr, int row, int col, int L, int k,
         }
     }       
     return kindex;
+
 }
 
 
-
-//
-//double dotProduct(complex<double> * vec1, complex<double> * vec2, int col)
-//{
-//    complex<double> product = 0;
-//    for (int i = 0; i < col; i++)
-//    {        product = product + vec1[i]*conj(vec2[i]); }
-//    return norm(product);
-//}
-//
-//
-//double dotProduct(complex<double> * vec1, vector<double> vec2, int col)
-//{
-//    complex<double> product = 0;
-//    for (int i = 0; i < col; i++)
-//    {        product = product + vec1[i].real()*(vec2[i]) + complex<double>(0,1)*vec1[i].imag()*(vec2[i]); }
-//    return norm(product); //norm : squared magnitude - The norm of (3,4) is 25
-//}
 
 
