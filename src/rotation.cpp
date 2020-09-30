@@ -227,15 +227,19 @@ int bitToIndex(string bit, vector<string> &vect, vector<int> &indexTable)
 //        }
 //        else{index++;}
 //    }
+//
+//    for (int j : indexTable){cout << j << "j" << endl;}
     upper = 0; 
     lower = vect.size()-1;
-//    cout << "inside bitToIndex " << endl;
-    while(lower > upper )
+//    cout << "inside bitToIndex " << numBit<< endl;
+    while(lower > upper || lower == upper)
     {
-
         mid = (upper + lower)/2;
-//        cout << "mid " << mid << endl;
-        if (indexTable[mid]> numBit){  upper = mid ; }
+//        cout << "upper " << upper << endl;
+//        cout << "lower " << lower << endl;
+//        cout << " mid  " << mid   << endl;
+//        cout << "index[]" << indexTable[mid] << endl;
+        if (indexTable[mid]> numBit){  upper = mid+1 ; }
         else if (indexTable[mid]< numBit) { lower = mid-1;}
         else{return mid;}
     }

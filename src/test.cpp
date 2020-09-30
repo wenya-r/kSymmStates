@@ -34,7 +34,7 @@ TEST(normalizesite4, sum)
 TEST(bitfindIndex, length5)
 {
     int index;
-    vector<int> state{ 67, 60, 40, 13, 4 }; 
+    vector<int> state{ 64, 60, 40, 13, 4 }; 
     vector<string> vect{"2101", "2020", "1111", "0111", "0011"};
     index = bitToIndex("1111" , vect, state);
     ASSERT_EQ(index, 2);
@@ -44,7 +44,7 @@ TEST(bitfindIndex, length5)
 TEST(bitfindIndex, length5_1)
 {
     int index;
-    vector<int> state{ 67, 60, 40, 13, 4 }; 
+    vector<int> state{ 64, 60, 40, 13, 4 }; 
     vector<string> vect{"2101", "2020", "1111", "0111", "0011"};
     index = bitToIndex("2101" , vect, state);
     ASSERT_EQ(index, 0);
@@ -54,7 +54,7 @@ TEST(bitfindIndex, length5_1)
 TEST(bitfindIndex, length5_2)
 {
     int index;
-    vector<int> state{ 67, 60, 40, 13, 4 }; 
+    vector<int> state{ 64, 60, 40, 13, 4 }; 
     vector<string> vect{"2101", "2020", "1111", "0111", "0011"};
     index = bitToIndex("2020" , vect, state);
     ASSERT_EQ(index, 1);
@@ -64,7 +64,7 @@ TEST(bitfindIndex, length5_2)
 TEST(bitfindIndex, length5_3)
 {
     int index;
-    vector<int> state{ 67, 60, 40, 13, 4 }; 
+    vector<int> state{ 64, 60, 40, 13, 4 }; 
     vector<string> vect{"2101", "2020", "1111", "0111", "0011"};
     index = bitToIndex("0111" , vect, state);
     ASSERT_EQ(index, 3);
@@ -74,7 +74,7 @@ TEST(bitfindIndex, length5_3)
 TEST(bitfindIndex, length5_4)
 {
     int index;
-    vector<int> state{ 67, 60, 40, 13, 4 }; 
+    vector<int> state{ 64, 60, 40, 13, 4 }; 
     vector<string> vect{"2101", "2020", "1111", "0111", "0011"};
     index = bitToIndex("0011" , vect, state);
     ASSERT_EQ(index, 4);
@@ -117,30 +117,30 @@ TEST(overlapK, kComp)
     ASSERT_TRUE(abs(overlap- 0.951634)<0.000001);
 }
 
-
-
-
-TEST(bitFindIndex, length6)
-{
-    vector<double> state{ -0.02733087971, 0.15430335, -0.1269724703, -0.4355791702,
-                          0.2812758202, -0.15430335, -0.1269724703, 0.15430335,
-                          0.2812758202, -0.3086066999, 0.2812758202, 0.15430335,
-                          -0.1269724703, -0.15430335, 0.2812758202,
-                         -0.4355791702, -0.1269724703, 0.15430335, -0.02733087971};
-    ASSERT_TRUE(abs(normalize(state, 19)- 1)<0.000000001);
-}
-
-
-
-TEST(bitFindIndex, length7)
-{
-    vector<double> state{ -0.02733087971, 0.15430335, -0.1269724703, -0.4355791702,
-                          0.2812758202, -0.15430335, -0.1269724703, 0.15430335,
-                          0.2812758202, -0.3086066999, 0.2812758202, 0.15430335,
-                          -0.1269724703, -0.15430335, 0.2812758202,
-                         -0.4355791702, -0.1269724703, 0.15430335, -0.02733087971};
-    ASSERT_TRUE(abs(normalize(state, 19)- 1)<0.000000001);
-}
+//
+//
+//
+//TEST(bitFindIndex, length6)
+//{
+//    vector<double> state{ -0.02733087971, 0.15430335, -0.1269724703, -0.4355791702,
+//                          0.2812758202, -0.15430335, -0.1269724703, 0.15430335,
+//                          0.2812758202, -0.3086066999, 0.2812758202, 0.15430335,
+//                          -0.1269724703, -0.15430335, 0.2812758202,
+//                         -0.4355791702, -0.1269724703, 0.15430335, -0.02733087971};
+//    ASSERT_TRUE(abs(normalize(state, 19)- 1)<0.000000001);
+//}
+//
+//
+//
+//TEST(bitFindIndex, length7)
+//{
+//    vector<double> state{ -0.02733087971, 0.15430335, -0.1269724703, -0.4355791702,
+//                          0.2812758202, -0.15430335, -0.1269724703, 0.15430335,
+//                          0.2812758202, -0.3086066999, 0.2812758202, 0.15430335,
+//                          -0.1269724703, -0.15430335, 0.2812758202,
+//                         -0.4355791702, -0.1269724703, 0.15430335, -0.02733087971};
+//    ASSERT_TRUE(abs(normalize(state, 19)- 1)<0.000000001);
+//}
 
 
 //    vector<double> groundState{
