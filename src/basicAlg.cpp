@@ -12,12 +12,13 @@ using namespace std;
 
 double normalize(complex<double> * vec, int col)
 {
-    double norm = 0;
+    complex<double>normSum{0,0};
     for (int i = 0; i < col; i++)
     {
-        norm = norm + vec[i].real() * vec[i].real() + vec[i].imag() * vec[i].imag(); 
+//        norm = norm + vec[i].real() * vec[i].real() + vec[i].imag() * vec[i].imag(); 
+        normSum = normSum + vec[i] * conj(vec[i]);
     }
-    return sqrt(norm);
+    return sqrt(sqrt(norm(normSum)));
 }
 
 

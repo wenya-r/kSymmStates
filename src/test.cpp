@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <string>
+#include <complex>
     
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
@@ -11,7 +12,21 @@ int main(int argc, char **argv) {
 }
 
 
+TEST(compl3x, mul)
+{
+    int index;
+    complex<double> a(1, 2), b(3, 4), result;
+    result = a*b;
+    ASSERT_DOUBLE_EQ(result.real(), -5);
+}
 
+TEST(compl3x, mulimag)
+{
+    int index;
+    complex<double> a(1, 2), b(3, 4), result;
+    result = a*b;
+    ASSERT_DOUBLE_EQ(result.imag(), 10);
+}
 
 TEST(normalize, sum)
 {
@@ -20,14 +35,22 @@ TEST(normalize, sum)
     ASSERT_TRUE(abs(normalize(state, 2)- 1)<0.000000000001);
 }
 
-TEST(normalizesite4, sum)
+
+vector<double> site4State()
 {
-    vector<double> state{ -0.02733087971, 0.15430335, -0.1269724703, -0.4355791702,
+return { -0.02733087971, 0.15430335, -0.1269724703, -0.4355791702,
                           0.2812758202, -0.15430335, -0.1269724703, 0.15430335,
                           0.2812758202, -0.3086066999, 0.2812758202, 0.15430335,
                           -0.1269724703, -0.15430335, 0.2812758202,
                          -0.4355791702, -0.1269724703, 0.15430335, -0.02733087971};
-    ASSERT_TRUE(abs(normalize(state, 19)- 1)<0.000000001);
+}
+
+
+TEST(normalizesite4, sum)
+{
+    vector<double> state;
+    state = site4State();
+    ASSERT_DOUBLE_EQ(normalize(state,19), 1.000000000059629);
 }
 
 
@@ -85,12 +108,79 @@ TEST(bitfindIndex, length5_4)
 TEST(overlapK, kComp)
 {
     
-    vector<double> state{ -0.02733087971, 0.15430335, -0.1269724703, -0.4355791702,
-                          0.2812758202, -0.15430335, -0.1269724703, 0.15430335,
-                          0.2812758202, -0.3086066999, 0.2812758202, 0.15430335,
-                          -0.1269724703, -0.15430335, 0.2812758202,
-                         -0.4355791702, -0.1269724703, 0.15430335, -0.02733087971};
+    vector<double> state;
+    vector<string> states;
+    vector<int> indexTable;
+    int k = 0;
+    double overlap, numStates_m;
+    state = site4State();
+    numStates_m = outputmStates(4, 0, states, indexTable);
+    
+//    cout << "finish numStates_m"<< numStates_m << endl;
+    overlap = overlapKmode(state, k, 19, states, indexTable) ;
+    ASSERT_DOUBLE_EQ(overlap, 0.95163397553033369);
+}
 
+TEST(overlapK, imagNorm)
+{
+    complex<double> *state;
+    complex<double> item;
+    double norm;
+    state = new complex<double>[19]; 
+   vector<double> ground;
+   ground = site4State();
+
+    for (int i = 0; i< 19; i++)
+    { 
+        item = {0, ground[i]};
+        state[i] = item;
+//        cout<< state[i] << endl;
+    }
+    norm = normalize(state, 19) ;
+    ASSERT_DOUBLE_EQ(norm, 1.000000000059629);
+}
+//
+//
+//
+TEST(overlapK, imagDotProduct)
+{
+    complex<double> *state;
+    complex<double> item;
+    cout.precision(17);      double norm;
+    state = new complex<double>[19]; 
+    vector<double> ground;
+    ground = site4State();
+
+
+    for (int i = 0; i< 19; i++)
+    {     state[i] =  {0, ground[i]};    }
+    norm = sqrt(dotProduct(state, state, 19)) ;
+//    cout << "dotProd : " << dotProduct(state, state, 19)<< endl;
+//    cout << " norm :   " <<sqrt(norm) << endl;
+//    cout << " normalize" << normalize(state, 19) << endl;
+    ASSERT_DOUBLE_EQ(sqrt(norm), 1.000000000059629);
+}
+//
+//
+//
+//
+//
+//
+//
+
+TEST(overlapK, imagkComp)
+{
+    complex<double> *state;
+    complex<double> item;
+    state = new complex<double>[19]; 
+    vector<double> ground;
+    ground = site4State();                        
+    for (int i = 0; i< 19; i++)
+    { 
+        item = {0, ground[i]};
+        state[i] = item;
+//        cout<< state[i] << endl;
+    }
     vector<string> states;
     vector<int> indexTable;
     int k = 0;
@@ -98,34 +188,33 @@ TEST(overlapK, kComp)
     numStates_m = outputmStates(4, 0, states, indexTable);
 //    cout << "finish numStates_m" << endl;
     overlap = overlapKmode(state, k, 19, states, indexTable) ;
-    ASSERT_TRUE(abs(overlap- 0.951634)<0.000001);
+    ASSERT_DOUBLE_EQ(overlap, 0.95163397553033369);
 }
+//
+//
 
-//
-//
-//
-//TEST(bitFindIndex, length6)
-//{
-//    vector<double> state{ -0.02733087971, 0.15430335, -0.1269724703, -0.4355791702,
-//                          0.2812758202, -0.15430335, -0.1269724703, 0.15430335,
-//                          0.2812758202, -0.3086066999, 0.2812758202, 0.15430335,
-//                          -0.1269724703, -0.15430335, 0.2812758202,
-//                         -0.4355791702, -0.1269724703, 0.15430335, -0.02733087971};
-//    ASSERT_TRUE(abs(normalize(state, 19)- 1)<0.000000001);
-//}
-//
-//
-//
-//TEST(bitFindIndex, length7)
-//{
-//    vector<double> state{ -0.02733087971, 0.15430335, -0.1269724703, -0.4355791702,
-//                          0.2812758202, -0.15430335, -0.1269724703, 0.15430335,
-//                          0.2812758202, -0.3086066999, 0.2812758202, 0.15430335,
-//                          -0.1269724703, -0.15430335, 0.2812758202,
-//                         -0.4355791702, -0.1269724703, 0.15430335, -0.02733087971};
-//    ASSERT_TRUE(abs(normalize(state, 19)- 1)<0.000000001);
-//}
-
+TEST(overlapK, imagk2Comp)
+{
+    complex<double> *state;
+    complex<double> item;
+    state = new complex<double>[19]; 
+    vector<double> ground;
+    ground = site4State();                        
+    for (int i = 0; i< 19; i++)
+    { 
+        item = {0, ground[i]};
+        state[i] = item;
+//        cout<< state[i] << endl;
+    }
+    vector<string> states;
+    vector<int> indexTable;
+    int k = 2;
+    double overlap, numStates_m;
+    numStates_m = outputmStates(4, k, states, indexTable);
+//    cout << "finish numStates_m" << endl;
+    overlap = overlapKmode(state, k, 19, states, indexTable) ;
+    ASSERT_DOUBLE_EQ(overlap, 0.04836697553033369);
+}
 
 //    vector<double> groundState{
 //        0,0,0,1/sqrt(6.),0,

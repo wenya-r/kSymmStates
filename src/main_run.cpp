@@ -14,7 +14,7 @@ using namespace std;
 
 int main()
 {
-    int L=16, kindex, k = 0, ni, sz;
+    int L=18, kindex, k = 0, ni, sz;
     int num, numStates_m; 
     double overlap = 0, dot = 0, item, projSize, groundNorm;
     vector<string> states;
@@ -26,7 +26,7 @@ int main()
     complex<double> * groundState;
 
 
-    fp = fopen("site16zvo_eigenvec_0_rank_0.dat", "rb");
+    fp = fopen("site18zvo_eigenvec_0_rank_0.dat", "rb");
         if(fp == NULL){
         printf("file error");
         exit(2);
@@ -40,10 +40,11 @@ int main()
 //    fp.close();
 
     groundState = new complex<double>[numStates_m]; // A is the vector for projection
+    fread(&arr, sizeof(arr), 1, fp);
     for (int i = 0; i < numStates_m; i++)
     {  
         fread(&arr, sizeof(arr), 1, fp);
-
+//        cout << sqrt(norm(arr)) << endl;
         groundState[i] = arr;
     }
     cout << "L is : " << L << endl;
@@ -59,6 +60,7 @@ int main()
 //    myFile.close();
     
     groundNorm =   dotProduct(groundState, groundState, numStates_m) ;
+//    groundNorm =   normalize(groundState, numStates_m) ;
     cout << "groundNorm = " << groundNorm << endl;
     for (int i =0; i < numStates_m; i++) {groundState[i] = groundState[i]/groundNorm;}
 

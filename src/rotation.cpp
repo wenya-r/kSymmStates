@@ -98,9 +98,11 @@ double overlapKmode(vector<double> groundState, int k, int numStates_m, vector<s
 //    cout << "beginning of overlpaLmode " << endl;
 
     projection(A, groundState, states, k, indexTable);
-
+//    cout << "print out A " << endl;
+//    for (int i = 0; i < numStates_m; i++){ cout << A[i] << endl;}
 
     projSize = normalize(A, numStates_m);
+//    cout << "projSize = " << projSize << endl;
     result = dotProduct(A, groundState, numStates_m)/projSize/projSize;
 
     return result;
@@ -122,6 +124,7 @@ double overlapKmode(complex<double> *groundState, int k, int numStates_m, vector
 
 
     projSize = normalize(A, numStates_m);
+    cout << endl;
     result = dotProduct(A, groundState, numStates_m)/projSize/projSize;
 
     return result;
@@ -140,18 +143,21 @@ void projection(complex<double> *arr, vector<double> groundstate , vector<string
     L = states[0].length() ; 
     km = k*2*pi/L;
     phase = complex<double>(0, km);
-//    cout << "beginning of projection " << endl;
+//    cout << "beginning of projection vec<double> " << endl;
     for (int i = 0; i< size; i++)
     {
         arr[i] = groundstate[i];
         state = states[i];
+//        cout << "i = " << i << arr[i] << endl;
         phaser= phase;
         for (int j = 1; j < L ; j++)
         { 
             state = translation(state);            
             arr[i] = arr[i] + exp(phaser) * groundstate[bitToIndex(state,states, indexTable)] ;
             phaser = phaser + phase;
+//            cout << arr[i] << endl;
         }
+//        cout << arr[i] << endl; // Problem!!
     }    
 }
 
@@ -172,12 +178,18 @@ void projection(complex<double> *arr, complex<double> *groundstate , vector<stri
         arr[i] = groundstate[i];
         state = states[i];
         phaser= phase;
+
+//        cout << "i = " << i << endl;
+//        cout << "phase = " << phaser << endl;
+//        cout << arr[i] << endl;
         for (int j = 1; j < L ; j++)
         { 
             state = translation(state);            
             arr[i] = arr[i] + exp(phaser) * groundstate[bitToIndex(state,states, indexTable)] ;
             phaser = phaser + phase;
+//            cout << arr[i] << endl;
         }
+//        cout << arr[i] << endl;
     }    
 }
 
@@ -345,13 +357,7 @@ int coefficientskMomentum(complex<double> **arr, int row, int col, int L, int k,
                 { arr[kindex][j] = cofArr[j];} //  to do
                 kindex++;
             }
-        
         }
     }       
     return kindex;
-
 }
-
-
-
-
