@@ -82,22 +82,6 @@ TEST(bitfindIndex, length5_4)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 TEST(overlapK, kComp)
 {
     

@@ -14,33 +14,51 @@ using namespace std;
 
 int main()
 {
-    int L=4, kindex, k = 0;
+    int L=16, kindex, k = 0, ni, sz;
     int num, numStates_m; 
     double overlap = 0, dot = 0, item, projSize, groundNorm;
     vector<string> states;
     cout.precision(17);  
-    
-    vector<double> groundState;
+    FILE *fp;
+//    vector<double> groundState;
     vector<int> indexTable;
+    complex<double> arr;
+    complex<double> * groundState;
 
-    ifstream myFile{"site6_m0_open.txt"};
-    int totalStates = 0;
-    numStates_m = 19;
-    if (!myFile.is_open()) return -1;
-    myFile >> L ;
-    cout << "L is : " << L << endl;
-    myFile >> numStates_m ;
-    cout << "numStates_m : " << numStates_m << endl;
-    for (int i = 0 ; i < numStates_m;i++)
-    {
-        myFile >> item;
-        groundState.push_back(item);
 
+    fp = fopen("site16zvo_eigenvec_0_rank_0.dat", "rb");
+        if(fp == NULL){
+        printf("file error");
+        exit(2);
     }
-    cout << "finish reading file " << endl;   
-    myFile.close();
+
+    fread(&ni, 4, 1, fp);
+    fread(&numStates_m, 8, 1, fp);
+    printf("number of iterations = %d\n",ni );
+    printf("number of m_states from file = %d\n",numStates_m );
     
-    groundNorm =   normalize(groundState, numStates_m) ;
+//    fp.close();
+
+    groundState = new complex<double>[numStates_m]; // A is the vector for projection
+    for (int i = 0; i < numStates_m; i++)
+    {  
+        fread(&arr, sizeof(arr), 1, fp);
+
+        groundState[i] = arr;
+    }
+    cout << "L is : " << L << endl;
+//    myFile >> numStates_m ;
+//    cout << "numStates_m : " << numStates_m << endl;
+//    for (int i = 0 ; i < numStates_m;i++)
+//    {
+//        myFile >> item;
+//        groundState.push_back(item);
+//
+//    }
+    cout << "finish reading file " << endl;   
+//    myFile.close();
+    
+    groundNorm =   dotProduct(groundState, groundState, numStates_m) ;
     cout << "groundNorm = " << groundNorm << endl;
     for (int i =0; i < numStates_m; i++) {groundState[i] = groundState[i]/groundNorm;}
 

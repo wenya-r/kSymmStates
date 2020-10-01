@@ -16,4 +16,5 @@ int bitToIndex(string bit, vector<string> &vect, vector<int> &indexTable);
 
 double overlapKmode(vector<double> groundState, int k, int numStates_m, vector<string> states, vector<int> &indexTable) ;
 
+double overlapKmode(complex<double> *groundState, int k, int numStates_m, vector<string> states, vector<int> &indexTable) ;
 
