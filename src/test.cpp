@@ -121,6 +121,21 @@ TEST(overlapK, kComp)
     ASSERT_DOUBLE_EQ(overlap, 0.95163397553033369);
 }
 
+TEST(overlapK, k2Comp)
+{
+    
+    vector<double> state;
+    vector<string> states;
+    vector<int> indexTable;
+    int k = 2;
+    double overlap, numStates_m;
+    state = site4State();
+    numStates_m = outputmStates(4, 0, states, indexTable);
+    
+//    cout << "finish numStates_m"<< numStates_m << endl;
+    overlap = overlapKmode(state, k, 19, states, indexTable) ;
+    ASSERT_DOUBLE_EQ(overlap, 0.048366024588924757);
+}
 TEST(overlapK, imagNorm)
 {
     complex<double> *state;
@@ -210,10 +225,10 @@ TEST(overlapK, imagk2Comp)
     vector<int> indexTable;
     int k = 2;
     double overlap, numStates_m;
-    numStates_m = outputmStates(4, k, states, indexTable);
-//    cout << "finish numStates_m" << endl;
+    numStates_m = outputmStates(4, 0, states, indexTable);
+    cout << "finish numStates_m" << numStates_m << endl;
     overlap = overlapKmode(state, k, 19, states, indexTable) ;
-    ASSERT_DOUBLE_EQ(overlap, 0.04836697553033369);
+    ASSERT_DOUBLE_EQ(overlap, 0.048366024588924757);
 }
 
 //    vector<double> groundState{

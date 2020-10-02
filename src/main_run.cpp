@@ -14,7 +14,7 @@ using namespace std;
 
 int main()
 {
-    int L=18, kindex, k = 0, ni, sz;
+    int L=20, kindex, k = 0, ni, sz;
     int num, numStates_m; 
     double overlap = 0, dot = 0, item, projSize, groundNorm;
     vector<string> states;
@@ -26,7 +26,7 @@ int main()
     complex<double> * groundState;
 
 
-    fp = fopen("site18zvo_eigenvec_0_rank_0.dat", "rb");
+    fp = fopen("site20zvo_eigenvec_0_rank_0.dat", "rb");
         if(fp == NULL){
         printf("file error");
         exit(2);

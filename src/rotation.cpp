@@ -143,7 +143,8 @@ void projection(complex<double> *arr, vector<double> groundstate , vector<string
     L = states[0].length() ; 
     km = k*2*pi/L;
     phase = complex<double>(0, km);
-//    cout << "beginning of projection vec<double> " << endl;
+    cout << " states size: " << size << endl;
+    cout << "beginning of projection vec<double> " << endl;
     for (int i = 0; i< size; i++)
     {
         arr[i] = groundstate[i];
@@ -172,6 +173,7 @@ void projection(complex<double> *arr, complex<double> *groundstate , vector<stri
     L = states[0].length() ; 
     km = k*2*pi/L;
     phase = complex<double>(0, km);
+//    cout << "size : " << size << endl;
 //    cout << "beginning of projection " << endl;
     for (int i = 0; i< size; i++)
     {
