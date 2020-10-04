@@ -57,7 +57,7 @@ TEST(normalizesite4, sum)
 TEST(bitfindIndex, length5)
 {
     int index;
-    vector<int> state{ 64, 60, 40, 13, 4 }; 
+    vector<unsigned long int> state{ 64, 60, 40, 13, 4 }; 
     vector<string> vect{"2101", "2020", "1111", "0111", "0011"};
     index = bitToIndex("1111" , vect, state);
     ASSERT_EQ(index, 2);
@@ -67,7 +67,7 @@ TEST(bitfindIndex, length5)
 TEST(bitfindIndex, length5_1)
 {
     int index;
-    vector<int> state{ 64, 60, 40, 13, 4 }; 
+    vector<unsigned long int> state{ 64, 60, 40, 13, 4 }; 
     vector<string> vect{"2101", "2020", "1111", "0111", "0011"};
     index = bitToIndex("2101" , vect, state);
     ASSERT_EQ(index, 0);
@@ -77,7 +77,7 @@ TEST(bitfindIndex, length5_1)
 TEST(bitfindIndex, length5_2)
 {
     int index;
-    vector<int> state{ 64, 60, 40, 13, 4 }; 
+    vector<unsigned long int> state{ 64, 60, 40, 13, 4 }; 
     vector<string> vect{"2101", "2020", "1111", "0111", "0011"};
     index = bitToIndex("2020" , vect, state);
     ASSERT_EQ(index, 1);
@@ -87,7 +87,7 @@ TEST(bitfindIndex, length5_2)
 TEST(bitfindIndex, length5_3)
 {
     int index;
-    vector<int> state{ 64, 60, 40, 13, 4 }; 
+    vector<unsigned long int> state{ 64, 60, 40, 13, 4 }; 
     vector<string> vect{"2101", "2020", "1111", "0111", "0011"};
     index = bitToIndex("0111" , vect, state);
     ASSERT_EQ(index, 3);
@@ -97,7 +97,7 @@ TEST(bitfindIndex, length5_3)
 TEST(bitfindIndex, length5_4)
 {
     int index;
-    vector<int> state{ 64, 60, 40, 13, 4 }; 
+    vector<unsigned long int> state{ 64, 60, 40, 13, 4 }; 
     vector<string> vect{"2101", "2020", "1111", "0111", "0011"};
     index = bitToIndex("0011" , vect, state);
     ASSERT_EQ(index, 4);
@@ -110,7 +110,7 @@ TEST(overlapK, kComp)
     
     vector<double> state;
     vector<string> states;
-    vector<int> indexTable;
+    vector<unsigned long int> indexTable;
     int k = 0;
     double overlap, numStates_m;
     state = site4State();
@@ -126,7 +126,7 @@ TEST(overlapK, k2Comp)
     
     vector<double> state;
     vector<string> states;
-    vector<int> indexTable;
+    vector<unsigned long int> indexTable;
     int k = 2;
     double overlap, numStates_m;
     state = site4State();
@@ -197,7 +197,7 @@ TEST(overlapK, imagkComp)
 //        cout<< state[i] << endl;
     }
     vector<string> states;
-    vector<int> indexTable;
+    vector<unsigned long int> indexTable;
     int k = 0;
     double overlap, numStates_m;
     numStates_m = outputmStates(4, 0, states, indexTable);
@@ -222,7 +222,7 @@ TEST(overlapK, imagk2Comp)
 //        cout<< state[i] << endl;
     }
     vector<string> states;
-    vector<int> indexTable;
+    vector<unsigned long int> indexTable;
     int k = 2;
     double overlap, numStates_m;
     numStates_m = outputmStates(4, 0, states, indexTable);
@@ -230,6 +230,38 @@ TEST(overlapK, imagk2Comp)
     overlap = overlapKmode(state, k, 19, states, indexTable) ;
     ASSERT_DOUBLE_EQ(overlap, 0.048366024588924757);
 }
+
+
+
+
+TEST(rot, mStates)
+{
+    int numStates, L = 20, m = 0;
+    complex<double> a(1, 2), b(3, 4), result;
+    vector<unsigned long int> indexTable;
+    vector<string> states;
+
+    numStates = outputmStates(L, m, states, indexTable);
+    ASSERT_EQ(numStates, 377379369);
+}
+
+
+
+
+
+
+
+
+
+
+//int outputmStates(int L, int m, vector<string> &vect, vector<unsigned long int> &indexTable);
+
+
+
+
+
+
+
 
 //    vector<double> groundState{
 //        0,0,0,1/sqrt(6.),0,

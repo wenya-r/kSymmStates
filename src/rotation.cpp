@@ -9,18 +9,19 @@
 using namespace std;
 
 void outputAllStates(int L);
-int outputmStates(int L, int m, vector<string> &vect, vector<int> &indexTable);
-int bitToNum(string bit);
+int outputmStates(int L, int m, vector<string> &vect, vector<unsigned long int> &indexTable);
+unsigned long int bitToNum(string bit);
+
 string translation(string bit);
 
-int coefficientskMomentum(complex<double> **arr, int row, int col, int L, int k, vector<string> &vect, vector<int> &indexTable);
-void projection(complex<double> *arr, vector<double> groundstate , vector<string> &states, int k, vector<int> &indexTable);
-void projection(complex<double> *arr, complex<double> *groundstate , vector<string> &states, int k, vector<int> &indexTable);
-int bitToIndex(string bit, vector<string> &vect, vector<int> &indexTable);
+int coefficientskMomentum(complex<double> **arr, int row, int col, int L, int k, vector<string> &vect, vector<unsigned long int> &indexTable);
+void projection(complex<double> *arr, vector<double> groundstate , vector<string> &states, int k, vector<unsigned long int> &indexTable);
+void projection(complex<double> *arr, complex<double> *groundstate , vector<string> &states, int k, vector<unsigned long int> &indexTable);
+int bitToIndex(string bit, vector<string> &vect, vector<unsigned long int> &indexTable);
 
-double overlapKmode(vector<double> groundState, int k, int numStates_m, vector<string> states, vector<int> &indexTable) ;
+double overlapKmode(vector<double> groundState, int k, int numStates_m, vector<string> states, vector<unsigned long int> &indexTable) ;
 
-double overlapKmode(complex<double> *groundState, int k, int numStates_m, vector<string> states, vector<int> &indexTable) ;
+double overlapKmode(complex<double> *groundState, int k, int numStates_m, vector<string> states, vector<unsigned long int> &indexTable) ;
 
 
 
@@ -85,7 +86,7 @@ int main()
 */
 
 
-double overlapKmode(vector<double> groundState, int k, int numStates_m, vector<string> states, vector<int> &indexTable) 
+double overlapKmode(vector<double> groundState, int k, int numStates_m, vector<string> states, vector<unsigned long int> &indexTable) 
 {
     double result, projSize;        
 
@@ -108,7 +109,7 @@ double overlapKmode(vector<double> groundState, int k, int numStates_m, vector<s
     return result;
 }
 
-double overlapKmode(complex<double> *groundState, int k, int numStates_m, vector<string> states, vector<int> &indexTable) 
+double overlapKmode(complex<double> *groundState, int k, int numStates_m, vector<string> states, vector<unsigned long int> &indexTable) 
 {
     double result, projSize;        
 
@@ -133,7 +134,7 @@ double overlapKmode(complex<double> *groundState, int k, int numStates_m, vector
 
 
 
-void projection(complex<double> *arr, vector<double> groundstate , vector<string> &states, int k, vector<int> &indexTable)
+void projection(complex<double> *arr, vector<double> groundstate , vector<string> &states, int k, vector<unsigned long int> &indexTable)
 {
     int L, size = states.size();
     string state;
@@ -163,7 +164,7 @@ void projection(complex<double> *arr, vector<double> groundstate , vector<string
 }
 
 
-void projection(complex<double> *arr, complex<double> *groundstate , vector<string> &states, int k, vector<int> &indexTable)
+void projection(complex<double> *arr, complex<double> *groundstate , vector<string> &states, int k, vector<unsigned long int> &indexTable)
 {
     int L, size = states.size();
     string state;
@@ -196,39 +197,51 @@ void projection(complex<double> *arr, complex<double> *groundstate , vector<stri
 }
 
 void outputAllStates(int L){
-    int numOfStates = pow(3,L);
-    int stateNum;
+    unsigned long int numOfStates = pow(3,L);
+    unsigned long int stateNum;
     string state;
     cout << "num of Allstates: " << numOfStates << endl;
-    for(int i = numOfStates-1;i>-1;i--)
-    {   
+//    for(unsigned long int i = numOfStates-1;i>-1;i--)
+//    {   
 //        cout << i;
-        stateNum = i;
-        state = to_string(stateNum%3);
-        for (int j = 0; j < 3; j++)
-        {
-            stateNum = stateNum/3;
-            state = to_string(stateNum%3) + state;
-        }
+//        stateNum = i;
+//        state = to_string(stateNum%3);
+//        for (int j = 0; j < 3; j++)
+//        {
+//            stateNum = stateNum/3;
+//            state = to_string(stateNum%3) + state;
+//        }
 //        cout << state << endl;
-    }
+//    }
 }
 
-int outputmStates(int L, int m, vector<string> &vect, vector<int> &indexTable){
+int outputmStates(int L, int m, vector<string> &vect, vector<unsigned long int> &indexTable){
 // m is Sz total. sum(string)= L+m 
 
-    int numOfStates = pow(3,L);
-    int stateNum, bit, sumBit;
+    unsigned long int numOfStates = pow(3,L);
+    unsigned long int stateNum, bit, sumBit, i;
     int total = 0;
     string state;
-    cout << "num of m states: " << numOfStates << endl;
-    for(int i = numOfStates-1;i>-1;i--)
+    cout <<  "num of m states: " ;
+    printf("%llu\n", numOfStates);
+    i = numOfStates - 1 ;
+    cout << " i is : " ;
+    printf("%llu\n", i);
+    cout << "max_size of vector indexTable = " << indexTable.max_size() << endl;
+    while(i > -1)
     {   
+        cout << " inside i " << endl;
         stateNum = i;
         
         bit = stateNum%3;
         state = to_string(bit);
         sumBit = bit;
+        if (i > 3486784380)           
+        {
+            cout << "stateNum" << stateNum << endl;
+        }
+
+
         for (int j = 0; j < L-1; j++)
         {
             stateNum = stateNum/3;
@@ -243,14 +256,15 @@ int outputmStates(int L, int m, vector<string> &vect, vector<int> &indexTable){
             indexTable.push_back(i);
 //            cout << state << endl;
         }
+        i--;
     }
     return total;
 
 }
 
-int bitToNum(string bit)
+unsigned long int bitToNum(string bit)
 {
-    int L, num;
+    unsigned long int L, num;
     num = 0;
 //    cout << "do you see bit?" << bit<< endl;
     L = bit.length();
@@ -273,22 +287,12 @@ string translation(string bit)
 
 }
 
-int bitToIndex(string bit, vector<string> &vect, vector<int> &indexTable)
+int bitToIndex(string bit, vector<string> &vect, vector<unsigned long int> &indexTable)
 {
-    int numBit, index= 0, upper,lower, mid=0;
+    int index= 0, upper,lower, mid=0;
+    unsigned long int numBit;
     bool done= false;
     numBit = bitToNum(bit);
-//    cout << "numBit = " << numBit<< endl;
-//    while(!done)
-//    {
-//        if (vect[index] == bit)
-//        {
-//            done = true;
-//        }
-//        else{index++;}
-//    }
-//
-//    for (int j : indexTable){cout << j << "j" << endl;}
     upper = 0; 
     lower = vect.size()-1;
 //    cout << "inside bitToIndex " << numBit<< endl;
@@ -309,7 +313,7 @@ int bitToIndex(string bit, vector<string> &vect, vector<int> &indexTable)
 
 
 
-int coefficientskMomentum(complex<double> **arr, int row, int col, int L, int k, vector<string> &vect, vector<int> &indexTable)
+int coefficientskMomentum(complex<double> **arr, int row, int col, int L, int k, vector<string> &vect, vector<unsigned long int> &indexTable)
 {
     string bit;
     int i, r, kindex = 0;

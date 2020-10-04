@@ -14,14 +14,14 @@ using namespace std;
 
 int main()
 {
-    int L=20, kindex, k = 0, ni, sz;
+    int L=20, k = 0, ni, sz;
     int num, numStates_m; 
     double overlap = 0, dot = 0, item, projSize, groundNorm;
     vector<string> states;
     cout.precision(17);  
     FILE *fp;
 //    vector<double> groundState;
-    vector<int> indexTable;
+    vector<unsigned long int> indexTable;
     complex<double> arr;
     complex<double> * groundState;
 
