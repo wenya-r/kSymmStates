@@ -1,11 +1,14 @@
 #include "basicAlg.hpp"
 #include "gtest/gtest.h"
 #include "rotation.hpp"
+#include "FileIO.hpp"
 
 #include <vector>
 #include <string>
 #include <complex>
-    
+#include <iostream>
+#include <fstream> 
+   
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
@@ -59,7 +62,7 @@ TEST(bitfindIndex, length5)
     int index;
     vector<unsigned long int> state{ 64, 60, 40, 13, 4 }; 
     vector<string> vect{"2101", "2020", "1111", "0111", "0011"};
-    index = bitToIndex("1111" , vect, state);
+    index = bitToIndex("1111", state);
     ASSERT_EQ(index, 2);
 }
 
@@ -69,7 +72,7 @@ TEST(bitfindIndex, length5_1)
     int index;
     vector<unsigned long int> state{ 64, 60, 40, 13, 4 }; 
     vector<string> vect{"2101", "2020", "1111", "0111", "0011"};
-    index = bitToIndex("2101" , vect, state);
+    index = bitToIndex("2101", state);
     ASSERT_EQ(index, 0);
 }
 
@@ -79,7 +82,7 @@ TEST(bitfindIndex, length5_2)
     int index;
     vector<unsigned long int> state{ 64, 60, 40, 13, 4 }; 
     vector<string> vect{"2101", "2020", "1111", "0111", "0011"};
-    index = bitToIndex("2020" , vect, state);
+    index = bitToIndex("2020", state);
     ASSERT_EQ(index, 1);
 }
 
@@ -89,7 +92,7 @@ TEST(bitfindIndex, length5_3)
     int index;
     vector<unsigned long int> state{ 64, 60, 40, 13, 4 }; 
     vector<string> vect{"2101", "2020", "1111", "0111", "0011"};
-    index = bitToIndex("0111" , vect, state);
+    index = bitToIndex("0111", state);
     ASSERT_EQ(index, 3);
 }
 
@@ -99,28 +102,96 @@ TEST(bitfindIndex, length5_4)
     int index;
     vector<unsigned long int> state{ 64, 60, 40, 13, 4 }; 
     vector<string> vect{"2101", "2020", "1111", "0111", "0011"};
-    index = bitToIndex("0011" , vect, state);
+    index = bitToIndex("0011", state);
     ASSERT_EQ(index, 4);
 }
 
 
+TEST(numFindBit, Lfour)
+{
+    string bit;
+    bit = numToBit(4, 241);
+    cout << bit << endl;
+    ASSERT_TRUE(bit=="2221");
+}
 
 TEST(overlapK, kComp)
 {
     
     vector<double> state;
     vector<string> states;
+    unsigned long int item;
     vector<unsigned long int> indexTable;
+    vector<unsigned long int> indexRead;
     int k = 0;
     double overlap, numStates_m;
     state = site4State();
-    numStates_m = outputmStates(4, 0, states, indexTable);
-    
-//    cout << "finish numStates_m"<< numStates_m << endl;
-    overlap = overlapKmode(state, k, 19, states, indexTable) ;
+    numStates_m = outputmStates(4, 0, indexTable);
+//    for (int i = 0; i < numStates_m ; i++)
+//        cout << indexTable[i] << endl;
+//    cout << "endl of output" << endl; 
+
+    overlap = overlapKmode(4, state, k, 19, indexTable) ;
     ASSERT_DOUBLE_EQ(overlap, 0.95163397553033369);
 }
 
+TEST(overlapK, kCompOutputM)
+{
+    
+    vector<double> state;
+    vector<string> states;
+    unsigned long int item;
+    vector<unsigned long int> indexTable;
+    vector<unsigned long int> indexRead;
+    int k = 0;
+    double overlap, numStates_m;
+    state = site4State();
+    numStates_m = outputmStates(4, 0, indexTable);
+//    for (int i = 0; i < numStates_m ; i++)
+//        cout << indexTable[i] << endl;
+    cout << "endl of output" << endl; 
+
+    saveStates(indexTable, "indexTable4.dat");
+
+
+//    for (int i = 0; i < numStates_m; i++)
+//          cout << indexTable[i] << endl;
+    
+
+//    cout << "finish numStates_m"<< numStates_m << endl;
+    overlap = overlapKmode(4, state, k, 19, indexTable) ;
+    ASSERT_DOUBLE_EQ(overlap, 0.95163397553033369);
+}
+TEST(overlapK, kCompReadM)
+{
+    
+    vector<double> state;
+    unsigned long int item;
+    vector<unsigned long int> indexTable;
+    vector<unsigned long int> indexRead;
+    int k = 0, L = 4;
+    double overlap, numStates_m;
+    state = site4State();
+//    numStates_m = outputmStates(4, 0, states, indexTable);
+//    for (int i = 0; i < numStates_m ; i++)
+//        cout << indexTable[i] << endl;
+//    cout << "endl of output" << endl; 
+
+
+    readStates(indexRead, "indexTable4.dat");
+//    cout << "out of reading " << endl;
+    numStates_m = indexRead.size();
+//    cout << "numStates_m after readStates" << endl;
+//    for (int i = 0; i < numStates_m; i++)
+//    {
+//         cout << " enterign for loop " << endl;
+//         cout << indexRead[i] << endl;
+    
+//    }
+    cout << "finish numStates_m "<< numStates_m << endl;
+    overlap = overlapKmode(L, state, k, 19, indexRead) ;
+    ASSERT_DOUBLE_EQ(overlap, 0.95163397553033369);
+}
 TEST(overlapK, k2Comp)
 {
     
@@ -130,10 +201,10 @@ TEST(overlapK, k2Comp)
     int k = 2;
     double overlap, numStates_m;
     state = site4State();
-    numStates_m = outputmStates(4, 0, states, indexTable);
+    numStates_m = outputmStates(4, 0, indexTable);
     
 //    cout << "finish numStates_m"<< numStates_m << endl;
-    overlap = overlapKmode(state, k, 19, states, indexTable) ;
+    overlap = overlapKmode(4, state, k, 19, indexTable) ;
     ASSERT_DOUBLE_EQ(overlap, 0.048366024588924757);
 }
 TEST(overlapK, imagNorm)
@@ -200,9 +271,9 @@ TEST(overlapK, imagkComp)
     vector<unsigned long int> indexTable;
     int k = 0;
     double overlap, numStates_m;
-    numStates_m = outputmStates(4, 0, states, indexTable);
+    numStates_m = outputmStates(4, 0, indexTable);
 //    cout << "finish numStates_m" << endl;
-    overlap = overlapKmode(state, k, 19, states, indexTable) ;
+    overlap = overlapKmode(4, state, k, 19, indexTable) ;
     ASSERT_DOUBLE_EQ(overlap, 0.95163397553033369);
 }
 //
@@ -225,25 +296,24 @@ TEST(overlapK, imagk2Comp)
     vector<unsigned long int> indexTable;
     int k = 2;
     double overlap, numStates_m;
-    numStates_m = outputmStates(4, 0, states, indexTable);
+    numStates_m = outputmStates(4, 0, indexTable);
     cout << "finish numStates_m" << numStates_m << endl;
-    overlap = overlapKmode(state, k, 19, states, indexTable) ;
+    overlap = overlapKmode(4, state, k, 19, indexTable) ;
     ASSERT_DOUBLE_EQ(overlap, 0.048366024588924757);
 }
 
 
 
 
-TEST(rot, mStates)
-{
-    int numStates, L = 20, m = 0;
-    complex<double> a(1, 2), b(3, 4), result;
-    vector<unsigned long int> indexTable;
-    vector<string> states;
-
-    numStates = outputmStates(L, m, states, indexTable);
-    ASSERT_EQ(numStates, 377379369);
-}
+//TEST(rot, mStates)
+//{
+//    int numStates, L = 20, m = 0;
+//    vector<unsigned long int> indexTable;
+//    vector<string> states;
+//    cout << "L is 20 :  " << L << endl; 
+//    numStates = outputmStates(L, m, states, indexTable);
+//    ASSERT_EQ(numStates, 377379369);
+//}
 
 
 

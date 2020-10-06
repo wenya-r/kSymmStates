@@ -16,9 +16,14 @@ add_library(rotation
         rotation.hpp
         rotation.cpp
 )
+add_library(fileIO
+    STATIC
+        FileIO.hpp
+        FileIO.cpp
+)
 add_library(basicAlg basicAlg.cpp)
 #add_executable(overlap_r createAllStates.cpp)
-add_executable(overlap_r main_run.cpp rotation.cpp)
+add_executable(overlap_r main_run.cpp rotation.cpp FileIO.cpp)
 target_link_libraries(overlap_r basic)
 
 
@@ -77,6 +82,7 @@ target_link_libraries(cpp_test
   PRIVATE
     basic
     rotation
+    fileIO
     gtest_main
   )
 

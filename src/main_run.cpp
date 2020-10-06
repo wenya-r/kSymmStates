@@ -65,12 +65,34 @@ int main()
     for (int i =0; i < numStates_m; i++) {groundState[i] = groundState[i]/groundNorm;}
 
 
-    numStates_m = outputmStates(L, 0, states, indexTable);
+    numStates_m = outputmStates(L, 0, indexTable);
+    // save indexTable
+    //
+    ofstream wf("indexTable.dat", ios::out | ios::binary);
+    if(!wf)
+    {
+        cout << "Cannot open file!" << endl;
+        return 1;
+    }
+    for (int i = 0; i < numStates_m; i++)
+        wf.write((char *) &indexTable[i], sizeof(indexTable[0]));
+    wf.close();
+    if (!wf.good()) 
+    {
+        cout << "Error occured at writing time!" << endl;
+        return 1;
+    }
+
+
+    
+
+
+
     cout << " numStates_m = " << numStates_m << endl;
     k = 0;
     for (k = 0 ; k < L; k++)
     {
-        overlap = overlapKmode(groundState, k, numStates_m, states, indexTable);
+        overlap = overlapKmode(L, groundState, k, numStates_m, indexTable);
         cout << "k = " << k <<  " :overlap ^2: " << overlap << endl;
     }
     return 0;
