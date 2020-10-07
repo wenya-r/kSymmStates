@@ -38,7 +38,7 @@ double overlapKmode(int L, vector<double> groundState, int k, int numStates_m, v
     A = new complex<double>[numStates_m]; // A is the vector for projection
     for (int i = 0; i < numStates_m; i++)
     {  A[i] = 0;}
-    cout << "beginning of overlpaLmode " << endl;
+//    cout << "beginning of overlpaLmode " << endl;
 
     projection(L, A, groundState, k, indexTable);
 //    cout << "print out A " << endl;
@@ -119,8 +119,8 @@ void projection(int L, complex<double> *arr, complex<double> *groundstate, int k
     complex<double> phase, phaser;
     km = k*2*pi/L;
     phase = complex<double>(0, km);
-    cout << "size : " << size << endl;
-    cout << "beginning of projection " << endl;
+//    cout << "size : " << size << endl;
+//    cout << "beginning of projection " << endl;
     for (int i = 0; i< size; i++)
     {
         arr[i] = groundstate[i];
@@ -128,7 +128,7 @@ void projection(int L, complex<double> *arr, complex<double> *groundstate, int k
         state = numToBit(L, indexTable[i]);
         phaser= phase;
 
-        cout << "i = " << state << endl;
+ //       cout << "i = " << state << endl;
 //        cout << "phase = " << phaser << endl;
 //        cout << arr[i] << endl;
         for (int j = 1; j < L ; j++)
@@ -192,10 +192,10 @@ int outputmStates(int L, int m, vector<unsigned long int> &indexTable){
         bit = stateNum%3;
         state = to_string(bit);
         sumBit = bit;
-        if (i > 3486784380)           
-        {
-            cout << "stateNum" << stateNum << endl;
-        }
+//        if (i > 3486784380)           
+//        {
+//            cout << "stateNum" << stateNum << endl;
+//        }
 
 
         for (int j = 0; j < L-1; j++)
@@ -226,7 +226,7 @@ unsigned long int bitToNum(string bit)
     num = 0;
 //    cout << "do you see bit?" << bit<< endl;
     L = bit.length();
-    num = stoi(bit, nullptr, 3);
+    num = stol(bit, nullptr, 3);
     return num;
 }
 
