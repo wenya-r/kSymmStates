@@ -135,6 +135,21 @@ TEST(overlapK, kComp)
     ASSERT_DOUBLE_EQ(overlap, 0.95163397553033369);
 }
 
+
+TEST(overlapK, outputM1)
+{
+    
+    vector<double> state;
+    vector<string> states;
+    vector<unsigned long int> indexTable;
+    int k = 2;
+    double overlap, numStates_m;
+    state = site4State();
+    numStates_m = outputmStates(4, 1, indexTable);
+    
+//    cout << "finish numStates_m"<< numStates_m << endl;
+    ASSERT_EQ(numStates_m, 16);
+}
 TEST(overlapK, kCompOutputM)
 {
     
@@ -305,15 +320,36 @@ TEST(overlapK, imagk2Comp)
 
 
 
-//TEST(rot, mStates)
-//{
-//    int numStates, L = 20, m = 0;
-//    vector<unsigned long int> indexTable;
+TEST(rot, projm1)
+{
+    int numStates_m = 16; // L = 20, m = 0;
+    vector<unsigned long int> indexTable;
 //    vector<string> states;
 //    cout << "L is 20 :  " << L << endl; 
 //    numStates = outputmStates(L, m, states, indexTable);
 //    ASSERT_EQ(numStates, 377379369);
-//}
+    double result, projSize;        
+
+    vector<double> ground{0.15811388300841914, -0.15811388300841878, -0.3162277660168382,
+                          0.31622776601683844, -0.15811388300841897, -0.3162277660168378,
+                         0.1581138830084188, 0.15811388300841928, -0.31622776601683766,
+                         0.3162277660168381, 0.31622776601683805, -0.3162277660168378,
+0.15811388300841878, -0.1581138830084189, 0.3162277660168378, -0.15811388300841886 };
+
+    complex<double> * A;
+    A = new complex<double>[16]; // A is the vector for projection
+    numStates_m = outputmStates(4, 1, indexTable);
+    for (int i = 0; i < numStates_m; i++)
+    {  A[i] = 0;}
+    cout << "beginning of overlpaLmode " << endl;
+
+    projection(4, A, ground, 0, indexTable);
+
+    projSize = normalize(A, numStates_m);
+    cout << "projSize " << projSize << endl;
+    ASSERT_DOUBLE_EQ(projSize, 0.0);
+
+}
 
 
 
