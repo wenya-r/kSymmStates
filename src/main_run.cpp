@@ -8,6 +8,8 @@
 #include "basicAlg.hpp"
 #include "rotation.hpp"
 #include "FileIO.hpp"
+#include <chrono>
+
 
 using namespace std;
 
@@ -15,7 +17,7 @@ using namespace std;
 
 int main(int argc, char **argv) // L , filename, SzTotal, k
 {
-    int L, k = 0, SzTotal = 0;
+    int L, k, SzTotal = 0;
     long long int ni, sz, num, numStates_m, numStates; 
     double overlap = 0, dot = 0, item, projSize, groundNorm;
     vector<string> states;
@@ -69,8 +71,11 @@ int main(int argc, char **argv) // L , filename, SzTotal, k
 //    }
     cout << "finish reading file " << endl;   
 //    myFile.close();
-    
+    auto start = chrono::high_resolution_clock::now();
     numStates_m = outputmStates(L, SzTotal, indexTable);
+    auto stop = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::seconds>(stop - start);
+    cout << "time spent in seconds :" << duration.count() << endl;
     groundNorm =   dotProduct(groundState, groundState, numStates_m) ;
     cout << "groundNorm = " << groundNorm << endl;
     for (int i =0; i < numStates_m; i++) {groundState[i] = groundState[i]/groundNorm;}
@@ -82,8 +87,7 @@ int main(int argc, char **argv) // L , filename, SzTotal, k
 //    readStates(indexTable, "indexTable22site.dat");
 
     cout << " numStates_m = " << numStates_m << endl;
-    k = 9;
-    for (k = 0; k < L; k++)
+    for (k = k; k < L; k++)
     {
         overlap = overlapKmode(L, groundState, k, numStates_m, indexTable);
         cout << "k = " << k <<  " :overlap ^2: " << overlap << endl;
