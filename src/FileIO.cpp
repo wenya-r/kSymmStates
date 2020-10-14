@@ -11,7 +11,8 @@ void saveStates(vector<unsigned long int> &indexTable, string indexTableName)
     ofstream wi(indexTableName, ios::out | ios::binary);
     if(!wi)
     {
-        cout << "Cannot open file!" << endl;
+        cout << indexTableName << endl;
+        cout << "Cannot open file! in " << endl;
     }
     wi.write((char *) &numStates_m, sizeof(numStates_m));
     for (int i = 0; i < numStates_m; i++)
@@ -33,6 +34,7 @@ void readStates(vector<unsigned long int> &indexRead, string indexTableName)
     ifstream rf(indexTableName, ios::out | ios::binary);
     if(!rf)
     {    cout << "Cannot open file!" << endl;
+        cout << indexTableName << endl;
     }
     rf.read((char *) &numStates_m, sizeof(item));
     cout << "output from file "  << endl;

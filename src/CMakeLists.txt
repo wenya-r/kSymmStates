@@ -5,6 +5,9 @@ set(CMAKE_CXX_STANDARD 11)
 #set(CMAKE_CXX_EXTENSIONS OFF)
 #set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+
+
+find_package(Threads)
 add_library(basic
     STATIC
         basicAlg.hpp
@@ -25,12 +28,13 @@ add_library(basicAlg basicAlg.cpp)
 #add_executable(overlap_r createAllStates.cpp)
 add_executable(overlap_r main_run.cpp rotation.cpp FileIO.cpp)
 target_link_libraries(overlap_r basic)
+target_link_libraries(overlap_r Threads::Threads)
 
 
 
 
 
-option(ENABLE_UNIT_TESTS "Enable unit tests" ON)
+option(ENABLE_UNIT_TESTS "Enable unit tests" OFF)
 message(STATUS "Enable testing: ${ENABLE_UNIT_TESTS}")
 
 if(ENABLE_UNIT_TESTS)
@@ -92,14 +96,6 @@ add_test(
   NAME google_test
   COMMAND $<TARGET_FILE:cpp_test>
   )
-
-
-
-
-
-
-
-
 endif()
 
 

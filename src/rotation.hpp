@@ -7,6 +7,7 @@
 
 void outputAllStates(int L);
 int outputmStates(int L, int m, vector<unsigned long int> &indexTable);
+int outputmStates(int L, int m, set<int> &indexTable);
 unsigned long int bitToNum(string bit);
 string translation(string bit);
 

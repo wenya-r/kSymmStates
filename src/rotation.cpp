@@ -6,6 +6,11 @@
 #include <fstream>
 #include "basicAlg.hpp"
 #include "rotation.hpp"
+#include <thread>
+#include <set>
+#include <mutex>
+#include <chrono>
+
 
 using namespace std;
 
@@ -63,8 +68,12 @@ double overlapKmode(int L, complex<double> *groundState, int k, int numStates_m,
     {  A[i] = 0;}
     cout << "beginning of overlpaLmode " << endl;
 
+    auto start = chrono::high_resolution_clock::now();
     projection(L, A, groundState, k, indexTable);
 
+    auto stop = chrono::high_resolution_clock::now();
+    auto duration = chrono::duration_cast<chrono::seconds>(stop - start);
+    cout << "time spent in seconds :" << duration.count() << endl;
 
     projSize = normalize(A, numStates_m);
     cout << endl;
@@ -110,38 +119,71 @@ void projection(int L, complex<double> *arr, vector<double> groundstate , int k,
 }
 
 
-void projection(int L, complex<double> *arr, complex<double> *groundstate, int k, vector<unsigned long int> &indexTable)
+void parallel_worker(int L, complex<double> *arr, complex<double> *groundstate, int k, vector<unsigned long int> &indexTable, complex<double> phase, size_t start_index, size_t end_index)
 {
-    int size = indexTable.size();
+    
+    string state;
+//    const double pi = acos(-1);
+//    double  km;
+    complex<double> phaser;
+//    km = k*2*pi/L;
+//    phase = complex<double>(0, km);
+    
+    for (int m = start_index; m < end_index; m++)
+    {
+         arr[m] = groundstate[m];
+         state = numToBit(L, indexTable[m]);
+         phaser= phase;
+//         if (m%10000 == 3) {cout << "I am runing 1000 times" <<m << endl;}
+         for (int j = 1; j < L ; j++)
+         { 
+             state = translation(state);            
+             arr[m] = arr[m] + exp(phaser) * groundstate[bitToIndex(state, indexTable)] ;
+             phaser += phase;
+         }
+    }
+}
+
+
+void projection(int L, complex<double> *arr, complex<double> *groundstate, int k, vector<unsigned long int> &indexTable)
+{   int size = indexTable.size();
     string state;
     const double pi = acos(-1);
     double  km;
     complex<double> phase, phaser;
     km = k*2*pi/L;
     phase = complex<double>(0, km);
-//    cout << "size : " << size << endl;
-//    cout << "beginning of projection " << endl;
-    for (int i = 0; i< size; i++)
+    size_t num_workers = thread::hardware_concurrency();
+    size_t chunk_size = ceil((float)size/num_workers);
+    cout << "mub workers "<< num_workers;
+    cout << "chunk " << chunk_size<< endl;
+    thread workers[num_workers];
+
+    for (int i = 0; i< (int)num_workers; i++)
     {
-        arr[i] = groundstate[i];
-//        state = states[i];
-        state = numToBit(L, indexTable[i]);
-        phaser= phase;
+//        cout << "I am in working stations" << endl;
+        size_t start_index = min(i* chunk_size, (size_t)size);
+        size_t end_index = min((i+1)* chunk_size, (size_t)size);
+        workers[(size_t)i] = thread(parallel_worker, L, arr, groundstate, k, ref(indexTable), phase, start_index, end_index);
 
- //       cout << "i = " << state << endl;
-//        cout << "phase = " << phaser << endl;
-//        cout << arr[i] << endl;
-        for (int j = 1; j < L ; j++)
-        { 
-            state = translation(state);            
-            arr[i] = arr[i] + exp(phaser) * groundstate[bitToIndex(state, indexTable)] ;
+        
+    }
 
 
-            phaser = phaser + phase;
-//            cout << arr[i] << endl;
-        }
-//        cout << arr[i] << endl;
-    }    
+    for (auto &w:workers) { w.join();}
+
+//    {
+//        arr[i] = groundstate[i];
+//        state = numToBit(L, indexTable[i]);
+//        phaser= phase;
+//
+//        for (int j = 1; j < L ; j++)
+//        { 
+//            state = translation(state);            
+//            arr[i] = arr[i] + exp(phaser) * groundstate[bitToIndex(state, indexTable)] ;
+//            phaser = phaser + phase;
+//        }
+//    }    
 }
 
 void outputAllStates(int L){
@@ -164,40 +206,19 @@ void outputAllStates(int L){
 }
 
 int outputmStates(int L, int m, vector<unsigned long int> &indexTable){
-// m is Sz total. sum(string)= L+m 
-
     long int numOfStates = pow(3,L);
     long int stateNum, bit, sumBit;
     long int i;
 
     int total = 0;
     string state;
-
-    printf(" L = %d \n " , L );
-    cout <<  "num of m states: " ;
-    printf("%ld\n", numOfStates);
     i = numOfStates - 1 ;
-//    cout << "max_size of vector indexTable = " << indexTable.max_size() << endl;
-//    cout << " i is : " << (i > -1) << endl ;
-//    printf("%ld\n", i);
     while(i > -1)
     {   
-
-//    cout << " i is : " ;
-//    printf("%ld\n", i);
-
-//        cout << " inside i " << endl;
         stateNum = i;
-        
         bit = stateNum%3;
         state = to_string(bit);
         sumBit = bit;
-//        if (i > 3486784380)           
-//        {
-//            cout << "stateNum" << stateNum << endl;
-//        }
-
-
         for (int j = 0; j < L-1; j++)
         {
             stateNum = stateNum/3;
@@ -208,16 +229,59 @@ int outputmStates(int L, int m, vector<unsigned long int> &indexTable){
         if (sumBit == L+m)
         {
             total++;
-//            vect.push_back(state);
             indexTable.push_back(i);
-//            cout << state << endl;
         }
         i--;
     }
-    
-
     return total;
+}
 
+mutex windex;
+
+void filterm(int begin, int end, set<int> &indexTable, int L, int m)
+{
+    
+    string state;
+    long int stateNum, bit, sumBit;
+    int totalm = L+m;
+    for (int i = begin; i < end; i++)    
+    {   
+        stateNum = i;
+        bit = stateNum%3;
+        state = to_string(bit);
+        sumBit = bit;
+        for (int j = 0; j < L-1; j++)
+        {
+            stateNum = stateNum/3;
+            bit =  stateNum%3;
+            state = to_string(bit) + state;
+            sumBit = sumBit + bit;
+        }
+        if (sumBit == totalm)
+        {
+//            windex.lock();
+            indexTable.insert(i);
+//            windex.unlock();
+        }
+    }
+}
+
+
+int outputmStates(int L, int m, set<int> &indexTable){
+// m is Sz total. sum(string)= L+m 
+
+    long int numOfStates = pow(3,L);
+    long int i;
+
+    int totalm = L+m;
+    size_t num_workers = thread::hardware_concurrency();
+    size_t chunk_size = ceil((float)numOfStates/num_workers);
+    cout << "mub workers "<< num_workers;
+    cout << "chunk " << chunk_size<< endl;
+    filterm(0, numOfStates, indexTable, L, m);
+//    i = numOfStates - 1 ;
+//    while(i > -1)
+    return indexTable.size();
 }
 
 unsigned long int bitToNum(string bit)

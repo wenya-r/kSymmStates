@@ -9,11 +9,12 @@
 #include "rotation.hpp"
 #include "FileIO.hpp"
 #include <chrono>
+#include <set>
 
 
 using namespace std;
 
-
+set<int> indexT;
 
 int main(int argc, char **argv) // L , filename, SzTotal, k
 {
@@ -56,40 +57,42 @@ int main(int argc, char **argv) // L , filename, SzTotal, k
     for (int i = 0; i < numStates; i++)
     {  
         fread(&arr, sizeof(arr), 1, fp);
-//        cout << sqrt(norm(arr)) << endl;
         groundState[i] = arr;
-//        if (i > 120 ) {cout << i<< arr << endl;}
     }
     cout << "L is : " << L << endl;
-//    myFile >> numStates_m ;
-//    cout << "numStates_m : " << numStates_m << endl;
-//    for (int i = 0 ; i < numStates_m;i++)
-//    {
-//        myFile >> item;
-//        groundState.push_back(item);
-//
-//    }
     cout << "finish reading file " << endl;   
-//    myFile.close();
     auto start = chrono::high_resolution_clock::now();
     numStates_m = outputmStates(L, SzTotal, indexTable);
+//    numStates_m = outputmStates(L, SzTotal, indexT);
     auto stop = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::seconds>(stop - start);
-    cout << "time spent in seconds :" << duration.count() << endl;
-    groundNorm =   dotProduct(groundState, groundState, numStates_m) ;
-    cout << "groundNorm = " << groundNorm << endl;
-    for (int i =0; i < numStates_m; i++) {groundState[i] = groundState[i]/groundNorm;}
+    cout << "time spent gen. m in seconds :" << duration.count() << endl;
 
-    indexName = "indexTableL"+to_string(L)+"m"+to_string(SzTotal);
+
+    groundNorm =   dotProduct(groundState, groundState, numStates) ;
+    cout << "groundNorm = " << groundNorm << endl;
+    for (int i =0; i < numStates; i++) {groundState[i] = groundState[i]/groundNorm;}
+
+//  conver indexT to indexTable
+//    copy(indexT.begin(), indexT.end(), back_inserter(indexTable));
+//    reverse(indexTable.begin(), indexTable.end());
+
+//  end converting
+
+
+
+
+    indexName = "indexTableL"+to_string(L)+"m"+to_string(SzTotal)+".dat";
     // save indexTable
     saveStates(indexTable, indexName);
     
-//    readStates(indexTable, "indexTable22site.dat");
+//    readStates(indexTable, indexName);
 
-    cout << " numStates_m = " << numStates_m << endl;
+    cout << " numStates from indexfile= " << indexTable.size() << endl;
+
     for (k = k; k < L; k++)
     {
-        overlap = overlapKmode(L, groundState, k, numStates_m, indexTable);
+        overlap = overlapKmode(L, groundState, k, numStates, indexTable);
         cout << "k = " << k <<  " :overlap ^2: " << overlap << endl;
     }
     return 0;
